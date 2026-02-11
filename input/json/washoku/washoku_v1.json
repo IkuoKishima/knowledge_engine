@@ -1,0 +1,13 @@
+{
+  "schema": "recipe_knowledge.v1",
+  "genre_level1": "和食",
+  "genre_level2": "家庭料理",
+  "records": [
+    {
+      "id": "washoku-001",
+      "title": "肉じゃが",
+      "keywords": ["肉じゃが", "煮物", "だし", "醤油", "みりん"],
+      "examples": ["肉じゃが", "牛肉の肉じゃが", "鶏肉の肉じゃが"]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "recipe_knowledge.v1",
+  "genre_level1": "中華",
+  "genre_level2": "中国料理",
+  "records": [
+    {
+      "id": "chuka-001",
+      "title": "麻婆豆腐",
+      "keywords": ["麻婆豆腐", "豆板醤", "花椒", "甜麺醤", "中華"],
+      "examples": ["麻婆豆腐", "本格麻婆豆腐", "四川風麻婆豆腐"]
+    }
+  ]
+}
