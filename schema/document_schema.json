@@ -1,0 +1,14 @@
+{
+  "schema": "doc.v1",
+  "fields": {
+    "doc_id": "string (stable id, hashed)",
+    "source_path": "string",
+    "source_record_id": "string",
+    "genre_level1": "string",
+    "genre_level2": "string",
+    "title": "string",
+    "text": "string (for embedding later)",
+    "version_hash": "string (sha256 of canonical payload)",
+    "created_at": "string (ISO8601)"
+  }
+}
