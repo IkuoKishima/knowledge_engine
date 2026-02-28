@@ -12,3 +12,7 @@ export/
 
 # macOS
 .DS_Store
+
+# Generated outputs (reproducible)
+output/
+
