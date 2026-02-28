@@ -1,0 +1,26 @@
+{
+  "schema": "lens_bundle.v1",
+  "lens_id": "lens_01_dishname",
+  "lens_type": "dishname",
+  "lang": "ja",
+  "targets": [
+    {
+      "label": "中華",
+      "items": [
+        { "patterns": ["麻婆豆腐", "回鍋肉", "青椒肉絲", "油淋鶏", "天津飯"], "weight": 6.0, "notes": "代表料理名" }
+      ]
+    },
+    {
+      "label": "和食",
+      "items": [
+        { "patterns": ["親子丼", "肉じゃが", "筑前煮", "味噌汁", "煮付け"], "weight": 6.0, "notes": "代表料理名" }
+      ]
+    },
+    {
+      "label": "洋食",
+      "items": [
+        { "patterns": ["グラタン", "シチュー", "ローストビーフ", "オムライス", "ハンバーグ"], "weight": 6.0, "notes": "代表料理名" }
+      ]
+    }
+  ]
+}

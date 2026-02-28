@@ -1,0 +1,26 @@
+{
+  "schema": "lens_bundle.v1",
+  "lens_id": "lens_06_negative_exception",
+  "lens_type": "negative_exception",
+  "lang": "ja",
+  "targets": [
+    {
+      "label": "ALL",
+      "items": [
+        { "patterns": ["〜風", "風", "っぽい", "アレンジ"], "weight": -1.0, "notes": "自信度を下げる" }
+      ]
+    },
+    {
+      "label": "洋食",
+      "items": [
+        { "patterns": ["ナポリタン"], "weight": 4.0, "notes": "洋食（日本式）に寄せる例外" }
+      ]
+    },
+    {
+      "label": "中華",
+      "items": [
+        { "patterns": ["中華風"], "weight": -2.0, "notes": "中華確定を弱める（風は別扱い）" }
+      ]
+    }
+  ]
+}

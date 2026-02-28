@@ -1,0 +1,26 @@
+{
+  "schema": "lens_bundle.v1",
+  "lens_id": "lens_03_ingredient",
+  "lens_type": "ingredient",
+  "lang": "ja",
+  "targets": [
+    {
+      "label": "中華",
+      "items": [
+        { "patterns": ["花椒", "豆板醤", "甜麺醤", "老抽", "紹興酒"], "weight": 3.0 }
+      ]
+    },
+    {
+      "label": "和食",
+      "items": [
+        { "patterns": ["だし", "みりん", "醤油", "味噌", "かつお節"], "weight": 3.0 }
+      ]
+    },
+    {
+      "label": "洋食",
+      "items": [
+        { "patterns": ["バター", "チーズ", "生クリーム", "トマトソース", "オリーブオイル"], "weight": 3.0 }
+      ]
+    }
+  ]
+}

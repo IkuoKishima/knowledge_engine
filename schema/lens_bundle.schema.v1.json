@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LensBundleSchema v1",
+  "type": "object",
+  "required": ["schema", "lens_id", "lens_type", "targets"],
+  "properties": {
+    "schema": { "const": "lens_bundle.v1" },
+    "lens_id": { "type": "string" },
+    "lens_type": {
+      "type": "string",
+      "enum": ["dishname", "method", "ingredient", "negative_exception"]
+    },
+    "lang": { "type": "string", "default": "ja" },
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["label", "items"],
+        "properties": {
+          "label": { "type": "string" },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["patterns", "weight"],
+              "properties": {
+                "patterns": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": { "type": "string" }
+                },
+                "weight": { "type": "number" },
+                "notes": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
