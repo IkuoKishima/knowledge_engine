@@ -2,6 +2,41 @@ from pathlib import Path
 import csv
 from knowledge_engine.lens_engine.classify_level1 import score_title
 
+def review_reason_and_hint(conf: float, scores: dict, hits: list):
+    """
+    未分類(needs_review)の理由を機械的に説明する。
+    conf==0 のときのみ意味を持つ想定（ただし他にも使える）
+    """
+    if hits is None:
+        hits = []
+
+    pos = [h for h in hits if getattr(h, "weight", 0) > 0]
+    neg = [h for h in hits if getattr(h, "weight", 0) < 0]
+
+    # 短いヒント（最大3件）
+    neg_patterns = []
+    for h in neg[:3]:
+        pat = getattr(h, "pattern", "")
+        if pat:
+            neg_patterns.append(pat)
+    hint = ""
+    if neg_patterns:
+        hint = "neg:" + ", ".join(neg_patterns)
+
+    # reason 判定
+    if len(hits) == 0:
+        return "no_hits", ""
+
+    if len(pos) == 0 and len(neg) > 0:
+        return "negative_only", hint
+
+    # scores が全部 0以下（実質シグナルなし）
+    if scores and max(scores.values()) <= 0:
+        return "no_positive_signal", hint
+
+    # ここまで来たら、理由は薄いが一応ヒットはある
+    return "uncertain", hint
+
 BASE = Path(__file__).resolve().parents[1]
 LENS_DIR = BASE / "data" / "lenses" / "v1"
 OUT_DIR = BASE / "output" / "demo"
@@ -36,12 +71,17 @@ for t in titles:
     needs_review = (conf <= 0.0)
     if needs_review:
         level1 = "未分類"
+        reason, hint = review_reason_and_hint(conf, scores, hits)
+    else:
+        reason, hint = "", ""
 
     rows.append({
         "title": t,
         "level1": level1,
         "confidence": f"{conf:.2f}",
         "needs_review": "1" if needs_review else "0",
+        "review_reason": reason,
+        "review_hint": hint,
         "scores": str(scores),
         "hits": "; ".join([f"{h.lens_id}:{h.label}:{h.pattern}({h.weight})" for h in hits])
     })
