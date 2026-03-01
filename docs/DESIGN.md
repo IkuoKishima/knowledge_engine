@@ -86,7 +86,7 @@ KNOWLEDGE_ENGINE
 ┃　　　normalize.py
 ┃ 　__init__.py
 ┃ 　cli.py
-┃ 　perceptron_demo.py
+┃ 　perceptron_demo.py : 初期検証用。現在は未使用（参考実装）
 ┃ 　rules_classifier.py
 ┣ output
 ┃ ┗ demo
