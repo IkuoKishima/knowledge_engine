@@ -32,10 +32,16 @@ titles = [
 rows = []
 for t in titles:
     level1, conf, scores, hits = score_title(t, lens_files)
+
+    needs_review = (conf <= 0.0)
+    if needs_review:
+        level1 = "未分類"
+
     rows.append({
         "title": t,
         "level1": level1,
         "confidence": f"{conf:.2f}",
+        "needs_review": "1" if needs_review else "0",
         "scores": str(scores),
         "hits": "; ".join([f"{h.lens_id}:{h.label}:{h.pattern}({h.weight})" for h in hits])
     })
@@ -55,7 +61,7 @@ index_a = sorted(rows, key=lambda r: r["title"])
 )
 
 # 索引パターンB：Level1グループ→title
-order = ["和食", "洋食", "中華", "その他"]
+order = ["和食", "洋食", "中華", "その他", "未分類"]
 index_b_lines = []
 for g in order:
     grp = [r for r in rows if r["level1"] == g]
