@@ -63,6 +63,7 @@ KNOWLEDGE_ENGINE
 ┃ 　　　lens_01_dishname.json
 ┃ 　　　lens_02_method.json
 ┃ 　　　lens_03_ingredient.json
+┃      lens_04_statistical.json
 ┃ 　　　lens_06_negative_exception.json
 ┃ 　　　README.md
 ┣ docs
@@ -97,6 +98,7 @@ KNOWLEDGE_ENGINE
 ┃ 　document_schema.json
 ┃ 　lens_bundle.schema.v1.json
 ┗ scripts
+　　build_statictical_lens.py
 　　classify_titles_demo.py
 　　embed_pending.py　
 　　index_build.py
@@ -104,3 +106,12 @@ KNOWLEDGE_ENGINE
 　　vectors_sync.py
 .gitignore
 README.md
+
+| 層                   | 役割      | 目的              |
+| ------------------- | ------- | --------------- |
+| ① ルールレンズ            | 明示知識    | 和食・中華などの強い判定    |
+| ② 統計レンズ（TF-IDF）     | 一般語除外   | 情報量の少ない語の減衰     |
+| ③ 共起レンズ             | 組み合わせ判定 | 「麻婆 × 豆腐」型の意味確定 |
+| ④ グラフレンズ（PageRank的） | 構造的重要度  | 中心語の重み          |
+| ⑤ 地域レンズ             | 文脈補正    | 四川風・京風など        |
+| ⑥ （将来的）コースレンズ       | 構造分類    | 前菜・主菜・酢の物       |
