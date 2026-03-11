@@ -1,27 +1,64 @@
-# knowledge_engine/perceptron_demo.py
-# Minimal perceptron demo: learn "Is this CHUKA?" from tiny features.
-# Runs on: Python 3.12 + numpy
+#!/usr/bin/env python3
+# ============================================================
+# FILE: knowledge_engine/perceptron_demo.py
+# DESC: 最小の“学習っぽさ”を体感するためのデモ（タイトル→手作り特徴量→簡易ロジスティック回帰風で「中華か？」を学習）
+#
+# DEPENDS:
+#   numpy
+#
+# PIPELINE ROLE
+#
+#   tiny labeled titles (manual)
+#        ↓
+#   featurize_title() → (X, y)
+#        ↓
+#   sigmoid + BCE gradient descent (toy training)  ← このスクリプト
+#        ↓
+#   learned weights の可視化 + 予測テスト
+#
+# STATUS:
+#   demo / reference (本番パイプライン未使用)
+#
+# ============================================================
 
 from __future__ import annotations
+
+# ============================================================
+# SECTION: imports
+# ============================================================
+
 import numpy as np
 
 
+# ============================================================
+# SECTION: math helpers
+# ============================================================
+
 def sigmoid(x: np.ndarray) -> np.ndarray:
+    """Sigmoid activation."""
     return 1.0 / (1.0 + np.exp(-x))
 
+
+# ============================================================
+# SECTION: feature extraction (title -> vector)
+# ============================================================
 
 def featurize_title(title: str) -> tuple[np.ndarray, list[str]]:
     """
     Very small handmade feature extractor.
     This is intentionally simple so you can "see" weights move.
-    """
-    t = title.strip().lower()
 
-    # Feature names (keep in sync with vector)
+    Return:
+      x: shape (D,)
+      names: feature names (keep in sync with vector)
+    """
+    # NOTE: keep raw title for matching (Japanese chars). We lower() for any ASCII.
+    _t = title.strip().lower()
+
     names = [
         "has_kanji_like",   # rough: contains any CJK range char
         "has_ma",           # contains '麻'
-        "has_douban",       # contains '豆板'
+        "has_douban",       # contains '豆板' or '豆瓣'
         "has_huiguo",       # contains '回鍋' or '回锅'
         "has_chinjao",      # contains '青椒' or 'チンジャオ'
         "has_miso",         # contains '味噌'
@@ -51,10 +88,16 @@ def featurize_title(title: str) -> tuple[np.ndarray, list[str]]:
     return x, names
 
 
+# ============================================================
+# SECTION: training (toy logistic regression)
+# ============================================================
+
 def train_demo(seed: int = 42) -> tuple[np.ndarray, float, list[str]]:
     """
-    Train a tiny logistic-regression-like perceptron (sigmoid + gradient descent).
-    Output: weights, bias, feature_names
+    Train a tiny logistic-regression-like model (sigmoid + gradient descent).
+
+    Output:
+      weights (D,), bias (scalar), feature_names (list[str])
     """
     rng = np.random.default_rng(seed)
 
@@ -70,8 +113,8 @@ def train_demo(seed: int = 42) -> tuple[np.ndarray, float, list[str]]:
         ("豚の生姜焼き", 0),
     ]
 
-    X_list = []
-    y_list = []
+    X_list: list[np.ndarray] = []
+    y_list: list[float] = []
     feat_names: list[str] | None = None
 
     for title, y in data:
@@ -82,9 +125,9 @@ def train_demo(seed: int = 42) -> tuple[np.ndarray, float, list[str]]:
         y_list.append(float(y))
 
     assert feat_names is not None
-    X = np.stack(X_list, axis=0)  # (N, D)
-    y = np.array(y_list, dtype=np.float64)  # (N,)
 
+    X = np.stack(X_list, axis=0)             # (N, D)
+    y = np.array(y_list, dtype=np.float64)   # (N,)
     N, D = X.shape
 
     # Initialize weights small random, bias 0
@@ -99,6 +142,7 @@ def train_demo(seed: int = 42) -> tuple[np.ndarray, float, list[str]]:
 
     for step in range(1, steps + 1):
         p = predict_proba(X)                 # (N,)
+
         # Binary cross-entropy gradient
         # dL/dz = (p - y) for sigmoid + BCE
         dz = (p - y)                         # (N,)
@@ -109,13 +153,18 @@ def train_demo(seed: int = 42) -> tuple[np.ndarray, float, list[str]]:
         b -= lr * db
 
         if step in (1, 2, 3, 5, 10, 20, 50, 100, 200):
-            # Show progress
-            loss = -np.mean(y * np.log(p + 1e-12) + (1 - y) * np.log(1 - p + 1e-12))
+            loss = -np.mean(
+                y * np.log(p + 1e-12) + (1 - y) * np.log(1 - p + 1e-12)
+            )
             acc = float(np.mean((p >= 0.5) == (y >= 0.5)))
             print(f"[step {step:3d}] loss={loss:.4f} acc={acc:.3f}  b={b:+.3f}")
 
     return w, b, feat_names
 
+
+# ============================================================
+# SECTION: reporting / prediction
+# ============================================================
 
 def pretty_weights(w: np.ndarray, feat_names: list[str]) -> None:
     pairs = list(zip(feat_names, w.tolist()))
@@ -128,19 +177,25 @@ def pretty_weights(w: np.ndarray, feat_names: list[str]) -> None:
 def predict(title: str, w: np.ndarray, b: float, feat_names: list[str]) -> None:
     x, names = featurize_title(title)
     assert names == feat_names
+
     p = float(sigmoid(x @ w + b))
     label = "中華(Chuka)" if p >= 0.5 else "非中華(Other)"
+
     print(f"\n[Predict] title='{title}' -> p(chuka)={p:.3f} => {label}")
+
     # evidence: show which features fired
     fired = [feat_names[i] for i, v in enumerate(x.tolist()) if v > 0.5]
     print("evidence(features fired):", fired if fired else "(none)")
 
 
+# ============================================================
+# SECTION: entrypoint
+# ============================================================
+
 def main() -> None:
     w, b, feat_names = train_demo()
     pretty_weights(w, feat_names)
 
-    # Quick tests
     tests = [
         "回鍋肉",
         "麻婆茄子",
